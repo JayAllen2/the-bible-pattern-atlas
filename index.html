@@ -1463,6 +1463,61 @@ a.badge{border-bottom:1px dotted currentColor!important;}
 /* The arrowhead belonged to a connector line that no longer exists. */
 .link-bridge::after,.link-bridge::before{content:none!important;display:none!important;}
 
+
+/* ==================================================================
+   Glossary, story, map
+   ================================================================== */
+.gl{border-bottom:1px dotted var(--text-muted);cursor:help;}
+.gl:hover{color:var(--accent-bright);border-bottom-color:var(--accent-bright);}
+.gl-def{font-size:1.06rem;line-height:1.72;margin:0 0 1rem;}
+.gloss-list dt{font-size:1.06rem;}
+.focus-on .ctx-bar{display:flex!important;}
+
+.story{margin:0 0 3rem;}
+.story h2{margin:0 0 .5rem;}
+.story-list{list-style:none;margin:1rem 0 0;padding:0;counter-reset:st;}
+.story-list li{counter-increment:st;border-top:1px solid var(--border);}
+.story-list li:last-child{border-bottom:1px solid var(--border);}
+.story-list a{display:grid;grid-template-columns:2.2rem minmax(0,1fr);gap:0 .8rem;padding:1rem 0;color:var(--text);}
+.story-list a::before{content:counter(st);font-family:'Literata',Georgia,serif;font-size:1.3rem;color:var(--text-muted);line-height:1.3;}
+.story-list a:hover{text-decoration:none;background:var(--bg-alt);}
+.story-list a:hover .story-t{color:var(--accent-bright);}
+.story-t{display:block;font-size:1.08rem;line-height:1.6;}
+.story-ref{display:block;font-size:.86rem;font-style:italic;color:var(--text-muted);margin-top:.3rem;}
+.story-compact .story-t{font-size:1rem;}
+.entry-story{display:flex;flex-direction:column;gap:3px;padding:12px 15px;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:2px;background:var(--bg-alt);margin-bottom:14px;}
+.entry-story:hover{text-decoration:none;}
+.entry-story:hover .ep-title{color:var(--accent-bright);}
+
+.map-wrap{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:2rem;align-items:start;margin-top:1rem;}
+@media (max-width:900px){.map-wrap{grid-template-columns:1fr;}}
+.map-svg{width:100%;height:auto;display:block;overflow:visible;}
+.me{fill:none;stroke:var(--accent);stroke-opacity:.055;stroke-width:.6;}
+.me.hov{stroke-opacity:.6;stroke-width:1;}
+.map-svg.has-sel .me{stroke-opacity:.012;}
+.map-svg.has-sel .me.on{stroke-opacity:.85;stroke-width:1.3;}
+.map-svg.has-cat .me{stroke-opacity:.012;}
+.map-svg.has-cat .me.cat{stroke-opacity:.3;stroke-width:.8;}
+.mn{fill:hsl(var(--cat-h,42) var(--cat-text-s) var(--cat-text-l));}
+.mn.dim{opacity:.22;}
+.mn.on{opacity:1;}
+.mn.sel{stroke:var(--accent-bright);stroke-width:3;}
+.mh{fill:transparent;cursor:pointer;}
+.ca{fill:none;stroke:hsl(var(--cat-h,42) var(--cat-text-s) var(--cat-text-l));stroke-width:7;stroke-opacity:.5;cursor:pointer;}
+.ca:hover,.ca.on{stroke-opacity:1;}
+.ca-label{font-family:'Literata',Georgia,serif;font-size:14px;font-style:italic;fill:var(--text-muted);pointer-events:none;}
+@media (max-width:640px){.ca-label{display:none;}.mn{r:5;}}
+.map-info{position:sticky;top:84px;min-height:6rem;}
+.mi-cat{font-style:italic;color:var(--text-muted);font-size:.9rem;}
+.mi-title{font-size:1.25rem;margin:.2rem 0 .3rem;}
+.mi-meta{font-size:.86rem;color:var(--text-muted);margin:0 0 .6rem;}
+.mi-sum{font-size:.98rem;line-height:1.6;margin:0 0 .8rem;}
+.mi-open{font-weight:600;color:var(--accent);}
+.mi-links{display:flex;flex-direction:column;gap:.35rem;margin-top:.8rem;padding-top:.8rem;border-top:1px solid var(--border);max-height:50vh;overflow:auto;}
+.mi-links a{font-size:.9rem;color:var(--text);}
+.mi-links a b{color:var(--text-muted);font-weight:600;margin-right:.4em;}
+.mi-links a:hover{color:var(--accent-bright);text-decoration:none;}
+
 </style>
 <div id="skyfield" aria-hidden="true">
   <div class="stars"></div>
@@ -1492,7 +1547,8 @@ a.badge{border-bottom:1px dotted currentColor!important;}
       <a class="nav-link" data-route="books" href="#/books">Books</a>
       <a class="nav-link" data-route="chains" href="#/chains">Threads</a>
       <a class="nav-link" data-route="method" href="#/method">Method</a>
-      <a class="nav-link" data-route="index" href="#/index/level">Index</a>
+      <a class="nav-link" data-route="map" href="#/map">Map</a>
+      <a class="nav-link" data-route="glossary" href="#/glossary">Glossary</a>
       <div class="nav-spacer"></div>
       <form class="nav-search" onsubmit="return doSearchSubmit(event)">
         <input type="text" id="navSearchInput" placeholder="Search the Atlas...">
@@ -1507,7 +1563,7 @@ a.badge{border-bottom:1px dotted currentColor!important;}
   <div id="scriptureBackdrop"></div>
   <div class="scripture-sheet">
     <header class="scripture-hd">
-      <span class="scripture-eyebrow">King James Version</span>
+      <span class="scripture-eyebrow" id="scriptureEyebrow">King James Version</span>
       <h2 id="scriptureRef"></h2>
       <button type="button" id="scriptureClose" aria-label="Close passage">&times;</button>
     </header>
@@ -1665,11 +1721,11 @@ function linkifyProse(escaped){
       title="Read ${esc(first)}">${whole}</button>`;
   });
 }
-function escProse(t){ return linkifyProse(esc(t || '')); }
+function escProse(t){ return glossifyProse(linkifyProse(esc(t || ''))); }
 function paras(text){
   if(!text) return '';
   return String(text).split(/\n\s*\n/)
-    .map(p => `<p>${linkifyProse(esc(p).replace(/\n/g,'<br>'))}</p>`).join('');
+    .map(p => `<p>${glossifyProse(linkifyProse(esc(p).replace(/\n/g,'<br>')))}</p>`).join('');
 }
 
 /* Learning utilities: convert the Atlas's existing claims into a visual,
@@ -1819,6 +1875,7 @@ function srefFromClaimRefs(raw){
 function openScripture(ref){
   const res = lookupScripture(ref);
   const panel = document.getElementById('scripturePanel');
+  const eb = document.getElementById('scriptureEyebrow'); if(eb) eb.textContent = 'King James Version';
   document.getElementById('scriptureRef').textContent = res.label;
   const body = document.getElementById('scriptureBody');
   if(res.found.length){
@@ -1949,7 +2006,7 @@ function clearRead(){
    correspondences, the four study groups, and nothing that invites a detour.
    Persisted, because someone who needs it needs it every visit. */
 const FOCUS_KEY = 'atlas.focus.v1';
-let FOCUS = false;
+let FOCUS = true;
 let pendingMethodAnchor = '';
 function applyFocus(){
   document.documentElement.classList.toggle('focus-on', FOCUS);
@@ -1965,7 +2022,8 @@ function toggleFocus(){
   applyFocus();
 }
 function initFocus(){
-  try{ FOCUS = localStorage.getItem(FOCUS_KEY) === '1'; }catch(e){ FOCUS = false; }
+  // on unless the reader has explicitly turned it off
+  try{ const st = localStorage.getItem(FOCUS_KEY); FOCUS = (st === null) ? true : st === '1'; }catch(e){ FOCUS = true; }
   applyFocus();
   const b = document.getElementById('focusToggle');
   if(b) b.addEventListener('click', toggleFocus);
@@ -1975,6 +2033,8 @@ function initScripturePanel(){
   document.addEventListener('click', e => {
     const btn = e.target.closest('.sref');
     if(btn){ e.preventDefault(); openScripture(btn.dataset.ref); return; }
+    const gl = e.target.closest('.gl');
+    if(gl){ e.preventDefault(); openGloss(gl.dataset.term); return; }
     if(e.target.closest('#scriptureBackdrop') || e.target.closest('#scriptureClose')) closeScripture();
   });
   document.addEventListener('keydown', e => { if(e.key === 'Escape') closeScripture(); });
@@ -2309,15 +2369,19 @@ function setActiveNav(route){
   });
 }
 function router(){
+  GLOSSED.clear();
   const {parts, params} = parseHash();
   const route = parts[0] || 'home';
   const app = document.getElementById('app');
   let html = '';
-  setActiveNav(['home','paths','catalog','books','verdicts','chains','index','method'].includes(route)?route:'');
+  setActiveNav(['home','paths','catalog','books','verdicts','chains','index','method','glossary','story','map'].includes(route)?route:'');
   try{
     if(route==='home') html = renderHome();
     else if(route==='catalog') html = renderCatalog(parts, params);
     else if(route==='method'){ html = renderMethod(); pendingMethodAnchor = params.get('t') || ''; }
+    else if(route==='glossary') html = renderGlossary();
+    else if(route==='story') html = renderStory();
+    else if(route==='map') html = renderMap();
     else if(route==='paths') html = renderPathsList();
     else if(route==='path') html = renderPathDetail(parts[1]);
     else if(route==='pattern'){ html = renderPatternDetail(parts[1], params.get('path')); markRead(parts[1]); }
@@ -2345,6 +2409,7 @@ function router(){
   }
   if(route==='catalog') wireCatalog(parts, params);
   if(route==='chain') wireChainDiagram();
+  if(route==='map') wireMap();
   const input = document.getElementById('navSearchInput');
   if(input && route==='search') input.value = decodeURIComponent(parts[1]||'');
   window.scrollTo(0,0);
@@ -2410,7 +2475,8 @@ function renderHome(){
           // Three options, not thirty: choosing gets slower as the list grows.
           const picks = STARTER_PATHS.slice(0,3);
           return `<div class="entry-paths">
-            <div class="entry-hd">If you do not know where to begin, start with one of these.</div>
+            <a class="entry-story" href="#/story"><span class="ep-title">New to the Bible? The story in twelve sentences</span><span class="ep-meta">Two minutes, in order, with a door into the Atlas at every step</span></a>
+        <div class="entry-hd">If you do not know where to begin, start with one of these.</div>
             ${picks.map(p => {
               const pr = pathProgress(p);
               return `<a class="entry-path" href="#/path/${encodeURIComponent(p.id)}">
@@ -2855,6 +2921,256 @@ function renderMethod(){
   `;
 }
 
+
+/* ==================================================================
+   GLOSSARY
+   The prose uses "covenant" 221 times and never says what one is. These
+   are short, descriptive, and written to the text rather than to any one
+   tradition; where readers differ, the entry says so. Linked on first use
+   per page. Scripture inside the reading panel is never marked up.
+   ================================================================== */
+const GLOSSARY = [
+ {key:'allusion', title:'Allusion', match:/\ballusions?\b/i,
+  def:"A quiet reference. A later writer uses the words or images of an earlier passage without saying so. It is weaker than a quotation and stronger than a shared theme."},
+ {key:'atonement', title:'Atonement', match:/\batonement\b/i,
+  def:"The covering or taking away of sin so that a person can stand before God. In the Old Testament this is done by sacrifice, above all on the Day of Atonement (Leviticus 16). The New Testament says the death of Christ did this once for all (Hebrews 9 and 10)."},
+ {key:'abrahamic', title:'The promise to Abraham', match:/\bAbrahamic\b/i,
+  def:"God’s promise to Abraham of land, many descendants, and blessing for every nation (Genesis 12:1-3; 15; 17; 22). A great deal of the rest of the Bible follows what became of it."},
+ {key:'aqedah', title:'The Aqedah', match:/\bAqedah\b/i,
+  def:"Hebrew for ’binding’. The story in Genesis 22 where Abraham is told to offer his son Isaac, and a ram is provided in his place."},
+ {key:'canon', title:'Canon', match:/\bcanon(?:ical)?\b/i,
+  def:"The list of books a community holds to be Scripture. This Atlas uses the sixty-six books of the King James Version, Genesis to Revelation."},
+ {key:'chiasm', title:'Chiasm', match:/\bchias(?:m|tic|mus)\b/i,
+  def:"A passage arranged as a mirror: A, B, C, B, A. The centre is usually the point. It is common in Hebrew writing."},
+ {key:'covenant', title:'Covenant', match:/\bcovenants?\b/i,
+  def:"A binding agreement with promises and obligations on both sides. God makes covenants with Noah, with Abraham, with Israel at Sinai, and with David. At the Last Supper Jesus calls the cup ’the new testament in my blood’ (Luke 22:20); testament and covenant translate the same word."},
+ {key:'davidic', title:'The promise to David', match:/\bDavidic\b/i,
+  def:"God’s promise to David that his house and his throne would last for ever (2 Samuel 7). The hope of a coming king from David’s line grows from it."},
+ {key:'echo', title:'Echo', match:/\bechoe?s?\b(?=[^.]{0,40}\b(?:of|from|Scripture|passage|text|Genesis|Isaiah|Psalm))/i,
+  def:"The faintest kind of reference: a word or rhythm that recalls an earlier passage without clearly pointing to it. Whether an echo is really there is often argued over."},
+ {key:'exile', title:'Exile', match:/\bexiles?\b|\bexilic\b/i,
+  def:"The carrying away of Judah’s people to Babylon after Jerusalem fell in 586 BC, and their captivity there. The prophets speak of the return from exile as a second exodus."},
+ {key:'exodus', title:'Exodus', match:/\bexodus\b/i,
+  def:"Israel’s escape from slavery in Egypt through the sea, under Moses (Exodus 1-15). It is also the name of the book that tells it. The exodus becomes the Bible’s central picture of rescue."},
+ {key:'fulfillment', title:'Fulfillment', match:/\bfulfil(?:l)?ments?\b/i,
+  def:"The claim that what an earlier text spoke of has come to pass in a later event. The Atlas distinguishes five kinds; they are set out on the Method page."},
+ {key:'gematria', title:'Gematria', match:/\bgematria\b/i,
+  def:"Reading meaning out of the number value of Hebrew or Greek letters. The Atlas treats claims that rest on it as speculative."},
+ {key:'gospel', title:'Gospel', match:/\bgospels?\b/i,
+  def:"Good news. Also the name of the four books, Matthew, Mark, Luke and John, that tell the life of Jesus."},
+ {key:'inclusio', title:'Inclusio', match:/\binclusio\b/i,
+  def:"A frame: the same words or images at the beginning and the end of a passage, marking it out as one unit. The whole Bible opens and closes with a garden, a river, and the tree of life."},
+ {key:'jubilee', title:'Jubilee', match:/\bjubilee\b/i,
+  def:"Every fiftieth year under Israel’s law, when debts were released, slaves set free, and land returned to the family that first held it (Leviticus 25)."},
+ {key:'melchizedek', title:'Melchizedek', match:/\bMelchi[sz]edek\b/i,
+  def:"A priest and king of Salem who blesses Abraham (Genesis 14). Psalm 110 and Hebrews 7 take him as a picture of a priesthood older and greater than Aaron’s."},
+ {key:'messiah', title:'Messiah', match:/\bmessia(?:h|nic)\b/i,
+  def:"Hebrew for ’anointed one’; in Greek, Christ. Kings and priests were anointed with oil. The word came to mean the coming king from David’s line, whom the New Testament identifies as Jesus."},
+ {key:'passover', title:'Passover', match:/\bpassover\b/i,
+  def:"The night God struck Egypt and passed over the houses marked with a lamb’s blood (Exodus 12), kept ever after as a yearly meal. Jesus was crucified at Passover, and the New Testament calls him the Lamb."},
+ {key:'pentateuch', title:'Pentateuch', match:/\bpentateuch(?:al)?\b|\btorah\b/i,
+  def:"The first five books, Genesis to Deuteronomy. In Jewish usage, the Torah, which also means instruction or law more broadly."},
+ {key:'priesthood', title:'Priesthood', match:/\bpriesthoods?\b/i,
+  def:"Those set apart to offer sacrifice and to stand between the people and God; in Israel, the line of Aaron. The New Testament calls Christ the great high priest, and calls all believers a priesthood (1 Peter 2:9)."},
+ {key:'prophet', title:'Prophet', match:/\bprophets?\b|\bprophetic\b/i,
+  def:"One who speaks for God to the people, often calling them back to the covenant and often telling what is to come."},
+ {key:'protoevangelium', title:'Protoevangelium', match:/\bprotoevangelium\b/i,
+  def:"’First gospel’: the name given to Genesis 3:15, where the woman’s offspring is promised to bruise the serpent’s head. Many Christians read it as the first promise of Christ; others read it more narrowly."},
+ {key:'remnant', title:'Remnant', match:/\bremnant\b/i,
+  def:"The small part of Israel that comes through judgment and stays faithful, and through whom the promises continue."},
+ {key:'sabbath', title:'Sabbath', match:/\bsabbath\b/i,
+  def:"The seventh day, set apart for rest, because God rested after creation (Genesis 2:2-3; Exodus 20:8-11)."},
+ {key:'septuagint', title:'Septuagint', match:/\bseptuagint\b|\bLXX\b/,
+  def:"The Greek translation of the Hebrew Scriptures made before the time of Christ, often written LXX. The New Testament writers quote it often."},
+ {key:'tabernacle', title:'Tabernacle', match:/\btabernacle\b/i,
+  def:"The tent God told Moses to build so that he could dwell among Israel in the wilderness (Exodus 25-40). The temple later took its place, and the New Testament speaks of Christ, and of the church, as God’s dwelling."},
+ {key:'temple', title:'Temple', match:/\btemple\b/i,
+  def:"The house of God in Jerusalem. Built by Solomon, destroyed by Babylon, rebuilt after the exile, and destroyed again by Rome in AD 70."},
+ {key:'theophany', title:'Theophany', match:/\btheophan(?:y|ies|ic)\b/i,
+  def:"An appearance of God to a person, as at the burning bush or on Mount Sinai."},
+ {key:'typology', title:'Typology', match:/\btypolog(?:y|ical|ically)\b/i,
+  def:"Reading an earlier person, event, or institution as a pattern, a ’type’, that a later one fills out. Paul calls Adam ’the figure of him that was to come’ (Romans 5:14). It differs from allegory in resting on real history."}
+];
+const GLOSS_BY_KEY = {}; GLOSSARY.forEach(g => GLOSS_BY_KEY[g.key] = g);
+const GLOSSED = new Set();
+function glossifyProse(html){
+  if(!html) return html;
+  const parts = html.split(/(<[^>]+>)/);
+  let skip = 0;
+  for(let i = 0; i < parts.length; i++){
+    const seg = parts[i];
+    if(seg.startsWith('<')){
+      if(/^<(button|a)\b/i.test(seg)) skip++;
+      else if(/^<\/(button|a)\b/i.test(seg)) skip = Math.max(0, skip - 1);
+      continue;
+    }
+    if(skip || !seg.trim()) continue;
+    const hits = [];
+    for(const g of GLOSSARY){
+      if(GLOSSED.has(g.key)) continue;
+      const m = g.match.exec(seg);
+      if(m) hits.push({g, i:m.index, n:m[0].length, t:m[0]});
+    }
+    if(!hits.length) continue;
+    hits.sort((a,b) => a.i - b.i);
+    let out = '', cur = 0;
+    for(const h of hits){
+      if(h.i < cur || GLOSSED.has(h.g.key)) continue;
+      GLOSSED.add(h.g.key);
+      out += seg.slice(cur, h.i) + `<span class="gl" data-term="${h.g.key}" title="What does this mean?">${h.t}</span>`;
+      cur = h.i + h.n;
+    }
+    parts[i] = out + seg.slice(cur);
+  }
+  return parts.join('');
+}
+function openGloss(key){
+  const g = GLOSS_BY_KEY[key]; if(!g) return;
+  const panel = document.getElementById('scripturePanel');
+  const eyebrow = document.getElementById('scriptureEyebrow'); if(eyebrow) eyebrow.textContent = 'Glossary';
+  document.getElementById('scriptureRef').textContent = g.title;
+  document.getElementById('scriptureBody').innerHTML =
+    `<p class="gl-def">${esc(g.def)}</p><p class="sq-note"><a href="#/glossary" onclick="closeScripture()">All terms</a></p>`;
+  panel.classList.add('open'); panel.setAttribute('aria-hidden','false');
+  const c = document.getElementById('scriptureClose'); if(c) c.focus();
+}
+function renderGlossary(){
+  const items = GLOSSARY.slice().sort((a,b) => a.title.localeCompare(b.title));
+  return `
+  <div class="crumbs"><a href="#/home">Atlas</a> &rsaquo; Glossary</div>
+  <h1>Glossary</h1>
+  <p class="book-tagline">The words this Atlas uses without stopping to explain them. Each is also
+  marked the first time it appears on a page; select it there to read the entry in place.</p>
+  <dl class="type-list gloss-list">
+    ${items.map(g => `<div class="type-item" id="gl-${g.key}"><dt>${esc(g.title)}</dt><dd>${esc(g.def)}</dd></div>`).join('')}
+  </dl>
+  <p class="secnote">For how a connection earns its rating, and the five kinds of fulfillment, see <a href="#/method">Method</a>.</p>`;
+}
+
+/* ==================================================================
+   THE STORY IN TWELVE SENTENCES
+   For the reader who does not know the Bible. It describes what the text
+   says, in order, and links each sentence to a pattern or a book.
+   ================================================================== */
+const STORY = [
+ {t:"God makes the heavens and the earth, and sets a man and a woman in a garden with a river and a tree of life.", ref:"Genesis 1-2", to:"#/pattern/A02"},
+ {t:"They disobey and are sent out of the garden. Death comes in, and a promise is spoken that the woman’s offspring will bruise the serpent’s head.", ref:"Genesis 3", to:"#/pattern/C01"},
+ {t:"The world fills with violence and is undone by a flood. One family is carried through it, and God makes a covenant with them and with every living thing.", ref:"Genesis 6-9", to:"#/book/Genesis"},
+ {t:"God calls Abraham and promises him land, offspring, and blessing for all nations, and seals it with a covenant.", ref:"Genesis 12-22", to:"#/pattern/E01"},
+ {t:"Abraham’s family goes down into Egypt and is made slaves there. God brings them out through the sea by the hand of Moses.", ref:"Exodus 1-15", to:"#/pattern/F02"},
+ {t:"At Sinai God gives Israel his law, and a tent, the tabernacle, so that he may dwell among them. The people wander forty years before they enter the land.", ref:"Exodus 19-40; Numbers; Joshua", to:"#/pattern/B02"},
+ {t:"After a time of judges and a first king, David is given the throne and a promise that his house will endure. His son Solomon builds the temple.", ref:"1-2 Samuel; 1 Kings 1-8", to:"#/pattern/G07"},
+ {t:"The kingdom splits in two. The people turn to other gods, and the prophets warn them, plead with them, and tell of both judgment and a restoring to come.", ref:"1 Kings 12 to 2 Kings; the Prophets", to:"#/book/Isaiah"},
+ {t:"Jerusalem falls, the temple is destroyed, and the people are carried into exile in Babylon. Seventy years later some return and rebuild.", ref:"2 Kings 25; Ezra; Nehemiah", to:"#/pattern/G18"},
+ {t:"Four hundred years pass. Then Jesus is born in David’s line, announces the kingdom of God, heals and teaches, and is crucified at Passover.", ref:"Matthew to John", to:"#/pattern/J01"},
+ {t:"He is raised on the third day, and sends his followers out with the Spirit. The church spreads from Jerusalem to Rome, and letters are written to guide it.", ref:"Luke 24; Acts; the Epistles", to:"#/book/Acts"},
+ {t:"The last book sees a new heaven and a new earth, and a city with a river and the tree of life, where God dwells with his people and there is no more curse.", ref:"Revelation 21-22", to:"#/pattern/K11"}
+];
+function storyBlock(compact){
+  return `<section class="story${compact?' story-compact':''}" aria-labelledby="story-title">
+    <h2 id="story-title">The story in twelve sentences</h2>
+    <p class="secnote">If the Bible is new to you, this is the whole of it, in order. Every sentence opens onto the place in the Atlas where that part of the story is traced.</p>
+    <ol class="story-list">${STORY.map(x =>
+      `<li><a href="${x.to}"><span class="story-t">${esc(x.t)}</span><span class="story-ref">${esc(x.ref)}</span></a></li>`).join('')}</ol>
+  </section>`;
+}
+function renderStory(){
+  return `<div class="crumbs"><a href="#/home">Atlas</a> &rsaquo; The story</div>${storyBlock(false)}
+  <p class="secnote" style="margin-top:2rem">Ready to go further? <a href="#/paths">Take a path</a>, or <a href="#/map">see every connection at once</a>.</p>`;
+}
+
+/* ==================================================================
+   THE MAP
+   All 209 patterns on one ring, grouped by category, with every
+   cross-reference drawn as a line through the centre. Select a point to
+   see its connections; select a category to see only that category's.
+   Pure SVG, no library, so the file stays self-contained.
+   ================================================================== */
+function renderMap(){
+  const cats = Object.keys(CATEGORY_NAMES);
+  const nodes = [];
+  cats.forEach(c => PATTERNS.filter(p => p.category === c).sort((a,b) => a.id < b.id ? -1 : 1).forEach(p => nodes.push(p)));
+  const N = nodes.length, cx = 500, cy = 500, R = 392, gap = 0.02;
+  const per = (2*Math.PI - gap*cats.length) / N;
+  let a = -Math.PI/2; const ang = {}, arc = {};
+  cats.forEach(c => { const s0 = a; nodes.filter(p => p.category === c).forEach(p => { ang[p.id] = a + per/2; a += per; }); arc[c] = [s0, a]; a += gap; });
+  const pos = id => ({x: cx + R*Math.cos(ang[id]), y: cy + R*Math.sin(ang[id])});
+  const seen = new Set(), edges = [];
+  PATTERNS.forEach(p => (p.cross_refs||[]).forEach(q => {
+    if(!PBY_ID[q] || q === p.id) return;
+    const k = p.id < q ? p.id+'|'+q : q+'|'+p.id;
+    if(seen.has(k)) return; seen.add(k); edges.push([p.id, q]);
+  }));
+  const edgeSvg = edges.map(([u,v]) => { const U = pos(u), V = pos(v);
+    return `<path class="me" data-a="${u}" data-b="${v}" data-ca="${PBY_ID[u].category}" data-cb="${PBY_ID[v].category}" d="M${U.x.toFixed(1)} ${U.y.toFixed(1)} Q${cx} ${cy} ${V.x.toFixed(1)} ${V.y.toFixed(1)}"/>`; }).join('');
+  const arcSvg = cats.map(c => { const [s0,e0] = arc[c]; const r2 = R + 24;
+    const x1 = cx + r2*Math.cos(s0), y1 = cy + r2*Math.sin(s0), x2 = cx + r2*Math.cos(e0), y2 = cy + r2*Math.sin(e0);
+    const mid = (s0+e0)/2, lr = R + 44, lx = cx + lr*Math.cos(mid), ly = cy + lr*Math.sin(mid);
+    const deg = mid*180/Math.PI, right = Math.cos(mid) >= 0;
+    return `<path class="ca catclr-${c}" data-cat="${c}" d="M${x1.toFixed(1)} ${y1.toFixed(1)} A${r2} ${r2} 0 ${(e0-s0)>Math.PI?1:0} 1 ${x2.toFixed(1)} ${y2.toFixed(1)}"><title>${esc(CATEGORY_NAMES[c])}</title></path>
+      <text class="ca-label" transform="translate(${lx.toFixed(1)} ${ly.toFixed(1)}) rotate(${(right?deg:deg+180).toFixed(1)})" text-anchor="${right?'start':'end'}">${esc(CATEGORY_NAMES[c])}</text>`; }).join('');
+  const nodeSvg = nodes.map(p => { const P = pos(p.id);
+    return `<circle class="mn catclr-${p.category}" data-id="${p.id}" cx="${P.x.toFixed(1)}" cy="${P.y.toFixed(1)}" r="3.4"/>
+      <circle class="mh" data-id="${p.id}" cx="${P.x.toFixed(1)}" cy="${P.y.toFixed(1)}" r="9"><title>${esc(p.id)} ${esc(p.name)}</title></circle>`; }).join('');
+  return `
+  <div class="crumbs"><a href="#/home">Atlas</a> &rsaquo; Map</div>
+  <h1>Every connection at once</h1>
+  <p class="book-tagline">All ${N} patterns on one ring, grouped by category. Each line is a cross-reference the Atlas draws between two of them: ${edges.length} in all. Select a point to see where it leads. Select a category to see only its lines.</p>
+  <div class="map-wrap">
+    <svg id="mapSvg" class="map-svg" viewBox="-130 -130 1260 1260" role="img" aria-label="Map of ${N} patterns and ${edges.length} connections">
+      <g class="edges">${edgeSvg}</g>
+      <g class="arcs">${arcSvg}</g>
+      <g class="nodes">${nodeSvg}</g>
+    </svg>
+    <aside id="mapInfo" class="map-info" aria-live="polite">
+      <p class="secnote">Select a point on the ring.</p>
+      <p class="secnote">Prefer a list? <a href="#/index/category">The index</a> has the same patterns by category.</p>
+    </aside>
+  </div>`;
+}
+function wireMap(){
+  const svg = document.getElementById('mapSvg'), info = document.getElementById('mapInfo');
+  if(!svg) return;
+  let sel = null, cat = null;
+  function paint(){
+    svg.classList.toggle('has-sel', !!sel); svg.classList.toggle('has-cat', !sel && !!cat);
+    svg.querySelectorAll('.me').forEach(e => {
+      e.classList.toggle('on', !!sel && (e.dataset.a === sel || e.dataset.b === sel));
+      e.classList.toggle('cat', !!cat && (e.dataset.ca === cat || e.dataset.cb === cat));
+    });
+    svg.querySelectorAll('.mn').forEach(n => {
+      const p = PBY_ID[n.dataset.id];
+      const linked = sel && (n.dataset.id === sel || (PBY_ID[sel].cross_refs||[]).includes(n.dataset.id) || (INBOUND_REFS[sel]||[]).includes(n.dataset.id));
+      n.classList.toggle('on', !!linked); n.classList.toggle('sel', n.dataset.id === sel);
+      n.classList.toggle('dim', (!!sel && !linked) || (!sel && !!cat && p.category !== cat));
+    });
+    svg.querySelectorAll('.ca').forEach(c => c.classList.toggle('on', c.dataset.cat === cat));
+  }
+  function show(id){
+    const p = PBY_ID[id]; if(!p) return;
+    const out = new Set([].concat(p.cross_refs||[], INBOUND_REFS[id]||[]).filter(x => PBY_ID[x] && x !== id));
+    info.innerHTML = `
+      <div class="mi-cat">${esc(CATEGORY_NAMES[p.category]||'')}</div>
+      <h2 class="mi-title">${esc(p.id)} &middot; ${esc(p.name)}</h2>
+      <p class="mi-meta">${esc(p.level)} &middot; ${(p.books||[]).length} of 66 books &middot; ${out.size} connection${out.size===1?'':'s'}</p>
+      <p class="mi-sum">${esc(firstSentence(p.summary))}</p>
+      <p><a class="mi-open" href="#/pattern/${encodeURIComponent(id)}">Open this pattern</a></p>
+      <div class="mi-links">${[...out].sort().map(x => `<a href="#/pattern/${encodeURIComponent(x)}" data-hover="${x}"><b>${esc(x)}</b> ${esc(PBY_ID[x].name)}</a>`).join('')}</div>`;
+  }
+  svg.addEventListener('click', e => {
+    const n = e.target.closest('.mh,.mn'); const c = e.target.closest('.ca');
+    if(n){ sel = (sel === n.dataset.id) ? null : n.dataset.id; if(sel) show(sel); else info.innerHTML = '<p class="secnote">Select a point on the ring.</p>'; paint(); return; }
+    if(c){ cat = (cat === c.dataset.cat) ? null : c.dataset.cat; sel = null;
+      info.innerHTML = cat ? `<div class="mi-cat">${esc(CATEGORY_NAMES[cat])}</div><p class="mi-sum">${PATTERNS.filter(p=>p.category===cat).length} patterns. Select one of its points, or <a href="#/catalog?cat=${cat}">list them</a>.</p>` : '<p class="secnote">Select a point on the ring.</p>';
+      paint(); return; }
+  });
+  svg.addEventListener('mouseover', e => { const n = e.target.closest('.mh,.mn'); if(n && !sel){ svg.querySelectorAll('.me').forEach(x => x.classList.toggle('hov', x.dataset.a === n.dataset.id || x.dataset.b === n.dataset.id)); } });
+  svg.addEventListener('mouseout', e => { if(e.target.closest('.mh,.mn')) svg.querySelectorAll('.me.hov').forEach(x => x.classList.remove('hov')); });
+  info.addEventListener('mouseover', e => { const a = e.target.closest('[data-hover]'); if(a) svg.querySelectorAll('.me').forEach(x => x.classList.toggle('hov', (x.dataset.a===sel&&x.dataset.b===a.dataset.hover)||(x.dataset.b===sel&&x.dataset.a===a.dataset.hover))); });
+  info.addEventListener('mouseout', () => svg.querySelectorAll('.me.hov').forEach(x => x.classList.remove('hov')));
+  paint();
+}
+
 function renderPathsList(){
   const card = p => {
     const pr = pathProgress(p);
@@ -2873,6 +3189,7 @@ function renderPathsList(){
   <div class="crumbs"><a href="#/home">Atlas</a> &rsaquo; Paths</div>
   <h1>Guided paths</h1>
   <p class="book-tagline" style="font-size:1rem;">Ordered walks through the patterns. Leave a path whenever you like.</p>
+  ${storyBlock(true)}
   <div class="section-hd"><h2>Start here</h2></div>
   <p class="secnote">Short routes for a first visit.</p>
   ${STARTER_PATHS.map(card).join('')}
