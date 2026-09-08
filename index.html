@@ -1401,6 +1401,64 @@ a.badge{border-bottom:1px dotted currentColor!important;}
 .chipwrap{line-height:1.9;}
 .tagchip{color:var(--text-muted)!important;font-style:italic;}
 
+
+/* A page of Scripture is not a slot machine. */
+.ke-random,[onclick*="goRandom"]{display:none!important;}
+
+
+/* ==============================================================
+   SPACING AND ALIGNMENT
+   Measured on one page: 29 distinct vertical spacing values (13, 14, 15 and
+   25, 26, 27 side by side) and three competing left edges for text, the
+   middle one caused by a stray 52px padding on the correspondence panel.
+   A seven-step spacing scale, and one left edge for everything the reader
+   reads; the study panel keeps its numeral gutter because that gutter is
+   doing a job.
+   ============================================================== */
+:root{--sp-1:.5rem;--sp-2:.75rem;--sp-3:1rem;--sp-4:1.5rem;--sp-5:2rem;--sp-6:3rem;--sp-7:4.5rem;}
+
+/* one edge */
+.relationship-panel{padding-left:0!important;padding-right:0!important;}
+.relationship-head,.link-map,.witness-section,.section-intro{padding-left:0!important;margin-left:0!important;}
+
+/* section rhythm: big gaps between sections, small gaps inside them */
+.crumbs{margin:0 0 var(--sp-5)!important;}
+.pattern-context{margin:0 0 var(--sp-3)!important;}
+.pattern-head h1{margin:0 0 var(--sp-3)!important;}
+.pattern-thesis{margin:0 0 var(--sp-4)!important;}
+.confidence-line{margin:0 0 var(--sp-6)!important;padding:0!important;}
+.pattern-head{margin:0 0 var(--sp-6)!important;padding:0!important;}
+.relationship-panel,.witness-section{margin:var(--sp-6) 0!important;}
+.relationship-head{margin:0 0 var(--sp-4)!important;}
+.link-row{padding:var(--sp-4) 0!important;margin:0!important;}
+.link-row + .link-row{border-top:1px solid var(--border)!important;}
+.study-transition{margin:var(--sp-7) 0 var(--sp-4)!important;}
+.study-transition h2{margin:0!important;}
+.study-groups{margin:0 0 var(--sp-6)!important;}
+.study-block{margin:0 0 var(--sp-5)!important;}
+.study-block:last-child{margin-bottom:0!important;}
+.study-groups h3{margin:0 0 var(--sp-2)!important;padding:0 0 var(--sp-1)!important;}
+.study-groups .body p{margin:0 0 var(--sp-3)!important;}
+.study-groups .body p:last-child{margin-bottom:0!important;}
+.study-groups .body ul,.study-groups .body li{margin-top:0!important;}
+.caution-box,.conn-item,.witness-card{padding:var(--sp-3) var(--sp-4)!important;margin:0 0 var(--sp-3)!important;}
+.claim-item{padding:var(--sp-3) 0!important;margin:0!important;}
+.study-next{margin:var(--sp-6) 0 0!important;padding:var(--sp-4) 0 0!important;}
+.path-banner{margin:0 0 var(--sp-5)!important;padding:var(--sp-3) var(--sp-4)!important;}
+.path-next{margin:var(--sp-6) 0 0!important;}
+.pattern-meta{margin:var(--sp-5) 0!important;}
+.spine-wrap{margin:var(--sp-5) 0!important;padding:var(--sp-3) 0!important;}
+.chipwrap{margin:0 0 var(--sp-3)!important;}
+.rail-box{padding:var(--sp-3) var(--sp-3)!important;margin:0 0 var(--sp-3)!important;}
+.method-sec{margin:var(--sp-6) 0 0!important;padding:var(--sp-5) 0 0!important;}
+.method-sec h2{margin:0 0 var(--sp-2)!important;}
+.method-sec .prose p,.type-item dd{margin:0 0 var(--sp-3)!important;}
+.type-item{padding:var(--sp-3) 0!important;}
+.path-steps a{padding:var(--sp-3) 0!important;}
+.entry-paths{margin-top:var(--sp-5)!important;gap:var(--sp-1)!important;}
+.entry-path{padding:var(--sp-2) var(--sp-3)!important;}
+#footer{padding:var(--sp-5) 0 var(--sp-6)!important;margin-top:var(--sp-7)!important;}
+
 </style>
 <div id="skyfield" aria-hidden="true">
   <div class="stars"></div>
@@ -1826,7 +1884,7 @@ const STARTER_PATHS = [
   {
     id:'seed',
     title:'One promise, traced',
-    blurb:'One promise, followed as it narrows: the seed of the woman, of Abraham, of Judah, of David, and at last one man.',
+    blurb:'One promise, followed as it narrows: the seed of the woman, of Abraham, of Judah, of David, and at last Christ himself.',
     minutes:16,
     steps:[
       {id:'C01', why:'Genesis 3:15, often called the protoevangelium: two seeds at enmity, a head and a heel wounded. Readers disagree about whether it looks forward to Christ.'},
@@ -2925,7 +2983,6 @@ function renderBookDetail(name){
 
   <div class="ke-row" style="margin-top:24px;padding-top:20px;border-top:2px solid var(--border);">
     ${prev?`<a class="ke-nav prev" href="#/book/${encodeURIComponent(prev)}">&larr; ${esc(prev)}</a>`:'<span></span>'}
-    <a class="ke-random" href="#" onclick="return goRandomBook(event)"><span aria-hidden="true">&#127922;</span> Random book</a>
     ${next?`<a class="ke-nav next" href="#/book/${encodeURIComponent(next)}">${esc(next)} &rarr;</a>`:'<span></span>'}
   </div>
   `;
