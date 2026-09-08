@@ -75,4 +75,5 @@ Speculative typological reading is a proposal rather than a fulfilment.
 
 The analytical content is the author's. The King James Version is in the public
 domain in the United States; in the United Kingdom it remains under perpetual Crown
-copyright, administered by Cambridge University Press. This repository is private.
+copyright, administered by Cambridge University Press, which is worth knowing if you
+intend to redistribute the embedded text from within the UK.
