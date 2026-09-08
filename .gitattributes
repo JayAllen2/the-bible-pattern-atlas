@@ -1,0 +1,2 @@
+# The atlas is a single generated artefact; keep diffs from exploding on it
+*.html -diff -merge linguist-generated=true
