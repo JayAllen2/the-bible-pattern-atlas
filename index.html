@@ -1338,6 +1338,69 @@ h1,h2,.plate h1,.pattern-head h1{text-wrap:balance;font-kerning:normal;}
   .relationship-head h2,.study-transition h2,.section-intro h2{font-size:1.3rem!important;}
 }
 
+
+/* ==============================================================
+   SUBTRACTION
+   Measured on one page: 300 interactive controls, four typefaces, nine kinds
+   of element in gold, and copy that narrates its own mechanics. The feeling
+   of a generated product is the accumulation. Everything below removes.
+   ============================================================== */
+
+/* Nothing moves under the pointer. */
+*,*::before,*::after{transition:none!important;}
+.card:hover,.nav-card:hover,a.chip:hover,.chain-stage:hover,a.card-link:hover .book-tile,
+.entry-path:hover,.ctx-pill:hover,.ke-random:hover,.path-steps a:hover{transform:none!important;box-shadow:none!important;}
+#skyfield .stars{animation:none!important;}
+.arc-path,.arc-node,.arc-node-halo,.plate-eyebrow,.plate h1,.plate-sub,.arcwrap,.plate-verse,.plate-cta{animation:none!important;opacity:1;}
+.arc-path{stroke-dashoffset:0!important;}
+
+/* What offers itself without being asked. */
+.nav-random,.keep-exploring,.fieldtools,.spine-legend,.relationship-key,.link-middle,
+.link-verb,.pb-track,.path-dots,.resume-bar,.resume-count,#backToTop,.plate-scroll{display:none!important;}
+
+/* A rating is a word, not a pill. */
+.badge{background:none!important;border:none!important;padding:0!important;border-radius:0!important;
+  font-family:'Literata',Georgia,serif!important;font-style:italic;font-weight:400!important;
+  font-size:.92em!important;color:var(--text-muted)!important;letter-spacing:0!important;text-transform:none!important;}
+.badge .catdot{display:none!important;}
+a.badge{border-bottom:1px dotted currentColor!important;}
+
+/* Gold is for the drop cap, the active nav item, and the one action. */
+.pattern-category,.gloss,.spine-count b,.pb-name,.path-go,.entry-all,.ep-meta b,.coord .n,
+.step-n,.link-level,.confidence-line strong,.learning-kicker,.title-star{color:var(--text-muted)!important;}
+.relationship-panel,.path-banner,.resume-strip,.entry-path,.ctx-chain,.ctx-verdict{border-left-color:var(--border)!important;}
+.entry-path,.resume-strip,.path-banner{border-color:var(--border)!important;}
+
+/* One typeface for reading. The mono stays on identifiers only. */
+.crumbs,.nav-link,.controls,.controls *,.lvlbtn,.catbtn,.clearbtn,.loadmore-btn,.fieldtool,
+.pattern-context,.pattern-context *,.confidence-line,.confidence-line *,.path-meta,.pb-count,
+.pn-note,.resume-hd,.entry-hd,.ep-meta,.rail-hd,.rail-key,.step-n,.coord .lbl,.search-hit,
+.result-count,.home-search-note,.scripture-eyebrow,.sq-ref,.mc-eg span,#footer,.stat-card .lbl,
+.home-search input,.home-search button,.nav-search input,.theme-btn,.study-number,.study-title,
+.brand-bible,.brand-atlas{font-family:'Literata',Georgia,serif!important;}
+.brand-bible,.brand-atlas{letter-spacing:.04em!important;}
+
+/* The correspondence figure: two references and a sentence. Not a pipeline. */
+.link-row,.link-bridge{background:none!important;border:none!important;box-shadow:none!important;}
+.link-claim{font-style:normal;text-align:left!important;}
+.link-node .node-ref{font-size:1rem!important;}
+
+
+/* Chips and citations were the last holdouts in the UI faces. A verse reference
+   set in monospace looks like code; it is Scripture. */
+.chip,.chip b,.tagchip,.spine-count,.spine-count b{font-family:'Literata',Georgia,serif!important;letter-spacing:0!important;}
+.refs,.refs .sref,.refs .sref-sep,.claim-item .refs,.subitem .refs{font-family:'Literata',Georgia,serif!important;letter-spacing:0!important;font-style:italic;}
+
+
+/* Cross-references are a run of text, not a row of pills. */
+.chip,.tagchip{background:none!important;border:none!important;padding:0!important;margin:0 .55em 0 0!important;
+  border-radius:0!important;font-size:inherit!important;color:var(--link)!important;}
+.chip b{color:inherit!important;font-weight:600;margin-right:.3em;}
+.chip::after,.tagchip::after{content:',';color:var(--text-muted);}
+.chipwrap .chip:last-child::after,.chipwrap .tagchip:last-child::after,.ke-more .chip:last-child::after{content:'';}
+.chipwrap{line-height:1.9;}
+.tagchip{color:var(--text-muted)!important;font-style:italic;}
+
 </style>
 <div id="skyfield" aria-hidden="true">
   <div class="stars"></div>
@@ -1708,8 +1771,7 @@ function openScripture(ref){
       : '';
     body.innerHTML = scopeNote + shown.map(e =>
       `<blockquote class="sq"><span class="sq-ref">${esc(e.ref)}</span><span class="sq-text">${esc(e.text)}</span></blockquote>`
-    ).join('') + `<p class="sq-note">King James Version. Words in [brackets] were supplied by the
-      translators and are italicised in printed editions.${res.source === 'kjv' ? '' :
+    ).join('') + `<p class="sq-note">King James Version. Bracketed words were supplied by the translators.${res.source === 'kjv' ? '' :
       ' Text as quoted in this Atlas.'}</p>`;
   } else {
     const bookLink = res.book && BBY_NAME[res.book]
@@ -1738,40 +1800,40 @@ const STARTER_PATHS = [
   {
     id:'shape',
     title:'The shape of the whole',
-    blurb:'Five patterns that frame the canon end to end. Together they show the inclusio Scripture forms around itself: the garden, river and tree of Genesis 2–3 answered by the city of Revelation 21–22.',
+    blurb:'Five patterns that frame the whole canon. Genesis opens with a garden, a river and a tree. Revelation closes with the same things inside a city.',
     minutes:18,
     steps:[
-      {id:'A01', why:'An inclusio at canonical scale. Genesis 1–3 and Revelation 21–22 share a garden, a river, a tree of life and the presence of God — and Revelation names the serpent of Genesis outright.'},
-      {id:'A03', why:'Isaiah’s new heavens and new earth, taken up by Peter and John. The canon does not close by restoring Eden but by surpassing it — a city where a garden had been.'},
-      {id:'B02', why:'Sacred space as a single developing institution: Eden, tabernacle, temple, the body of Christ, the church, the New Jerusalem. Each stage reuses the vocabulary of the last.'},
-      {id:'C03', why:'The curses of Genesis 3 — ground, pain, enmity, death, exile — tracked to the passages that reverse them. A test case for distinguishing thematic reversal from stated fulfillment.'},
-      {id:'K11', why:'Revelation 21–22 compresses bride, temple, Eden and holy of holies into one image. The densest convergence of patterns in Scripture, and a good place to test whether the convergence is authorial or imposed.'}
+      {id:'A01', why:'Genesis 1–3 and Revelation 21–22 share a garden, a river, the tree of life and the presence of God. Revelation also names the serpent of Genesis by name.'},
+      {id:'A03', why:'Isaiah’s new heavens and new earth, taken up by Peter and John. The canon ends with a city where the garden was.'},
+      {id:'B02', why:'One dwelling place, rebuilt six times: Eden, tabernacle, temple, the body of Christ, the church, the New Jerusalem. Each borrows the words of the one before.'},
+      {id:'C03', why:'The curses of Genesis 3 (ground, pain, enmity, death, exile) followed to the passages that undo them.'},
+      {id:'K11', why:'Revelation 21–22 gathers bride, temple, Eden and holy of holies into one picture. More patterns meet here than anywhere else in Scripture.'}
     ]
   },
   {
     id:'evidence',
     title:'Where Scripture quotes itself',
-    blurb:'Confirmed patterns only: connections a biblical writer states in his own words, by citation formula or explicit naming. The floor of the evidence, before interpretation begins.',
+    blurb:'Only patterns a biblical writer states in his own words. No interpretation is needed to see these.',
     minutes:20,
     steps:[
-      {id:'J01', why:'Matthew’s ten fulfillment formulas — ‘that it might be fulfilled which was spoken’ — are the clearest case of a writer marking his own use of Scripture, and the standard against which quieter allusions are measured.'},
-      {id:'J19', why:'The passion narratives are composed in the vocabulary of Psalm 22 and Isaiah 53. Where the evangelists cite openly and where they merely echo is the whole question of allusion.'},
-      {id:'K01', why:'Romans 5 calls Adam ‘the figure of him that was to come’ — typos, the word the discipline of typology is named for. Typology defined by a biblical writer rather than by later interpreters.'},
-      {id:'K04', why:'Hebrews argues the sacrificial system was a shadow of a reality — and, unusually, sets out its own interpretive method while doing so. The nearest thing in Scripture to a stated hermeneutic.'},
-      {id:'F02', why:'The exodus becomes the grammar of deliverance: the prophets announce return from exile as a second exodus, and the gospels frame the cross in its terms.'}
+      {id:'J01', why:'Matthew stops ten times to say ‘that it might be fulfilled which was spoken.’ No writer marks his use of Scripture more plainly.'},
+      {id:'J19', why:'The passion narratives are written in the words of Psalm 22 and Isaiah 53. Sometimes the evangelists say so. Sometimes they only echo.'},
+      {id:'K01', why:'Romans 5 calls Adam ‘the figure of him that was to come.’ The Greek word is typos, and it is where the word typology comes from.'},
+      {id:'K04', why:'Hebrews says the sacrifices were a shadow of something real, and explains how it is reading the Old Testament as it goes.'},
+      {id:'F02', why:'The prophets describe the return from exile as a second exodus. The gospels describe the cross the same way.'}
     ]
   },
   {
     id:'seed',
     title:'One promise, traced',
-    blurb:'One promise narrowing across the canon — seed of the woman, of Abraham, of Judah, of David — and the question of when a collective noun becomes a single person.',
+    blurb:'One promise, followed as it narrows: the seed of the woman, of Abraham, of Judah, of David, and at last one man.',
     minutes:16,
     steps:[
-      {id:'C01', why:'Genesis 3:15, the protoevangelium: enmity between two seeds, and a wounding of head and heel. Whether it is messianic in its own context is genuinely contested.'},
-      {id:'E01', why:'The Abrahamic promise holds land, seed and blessing together, and Paul later presses the grammatical number of ‘seed’ in Galatians 3:16 — an argument worth examining closely.'},
-      {id:'E09', why:'The Aqedah: an only son, a mountain, a substitute provided. Jewish and Christian interpretation have both read it typologically for a long time, which is itself part of the evidence.'},
-      {id:'G07', why:'2 Samuel 7 fixes the promise to a dynasty, generating the royal psalms and the messianic expectation the gospels inherit.'},
-      {id:'J01', why:'Matthew opens with a genealogy asserting the line has arrived, and reads Israel’s history as recapitulated in one life.'}
+      {id:'C01', why:'Genesis 3:15, often called the protoevangelium: two seeds at enmity, a head and a heel wounded. Readers disagree about whether it looks forward to Christ.'},
+      {id:'E01', why:'The promise to Abraham holds land, seed and blessing together. In Galatians 3:16 Paul builds an argument on the word ‘seed’ being singular.'},
+      {id:'E09', why:'The binding of Isaac: an only son, a mountain, and a ram given in his place. Jewish and Christian readers have both seen more in it for a very long time.'},
+      {id:'G07', why:'2 Samuel 7 ties the promise to David’s house. The royal psalms, and the hope the gospels inherit, come from here.'},
+      {id:'J01', why:'Matthew opens with a family tree to say the line has arrived, and tells the story of Israel again in one life.'}
     ]
   }
 ];
@@ -1935,7 +1997,7 @@ const LEVEL_ICON = {Confirmed:'●', 'Very Strong':'◆', Possible:'◑', Specul
 function levelSlug(level){ return String(level||'').toLowerCase().replace(/[^a-z]/g,''); }
 function levelBadge(level){
   if(!level) return '';
-  return `<span class="badge badge-lvl-${levelSlug(level)}"><span aria-hidden="true">${LEVEL_ICON[level]||''}</span> ${esc(level)}</span>`;
+  return `<span class="badge badge-lvl-${levelSlug(level)}">${esc(level)}</span>`;
 }
 /* "Cat A" told the reader nothing; the category's actual name does.
    opts.link must stay false anywhere this sits inside a card's wrapping <a>. */
@@ -2286,12 +2348,12 @@ function renderHome(){
           // Three options, not thirty: choosing gets slower as the list grows.
           const picks = STARTER_PATHS.slice(0,3);
           return `<div class="entry-paths">
-            <div class="entry-hd">Not sure what to look for? Start with a short path.</div>
+            <div class="entry-hd">If you do not know where to begin, start with one of these.</div>
             ${picks.map(p => {
               const pr = pathProgress(p);
               return `<a class="entry-path" href="#/path/${encodeURIComponent(p.id)}">
                 <span class="ep-title">${esc(p.title)}</span>
-                <span class="ep-meta">${p.steps.length} patterns &middot; ~${p.minutes} min${pr.done ? ` &middot; <b>${pr.done}/${pr.total}</b>` : ''}</span>
+                <span class="ep-meta">${p.steps.length} patterns, about ${p.minutes} minutes</span>
               </a>`;
             }).join('')}
             <a class="entry-all" href="#/paths">All paths &rarr;</a>
@@ -2577,7 +2639,7 @@ function renderPatternDetail(id, pathId){
     <div class="path-next">
       ${nextStep
         ? `<a class="plate-cta" href="#/pattern/${encodeURIComponent(nextStep.id)}${q}">Next: ${esc((PBY_ID[nextStep.id]||{}).name||nextStep.id)} &rarr;</a>
-           <span class="pn-note">${path.steps.length - stepIdx - 1} left &middot; about ${Math.max(3,Math.round(path.minutes/path.steps.length))} min each</span>`
+           `
         : `<a class="plate-cta" href="#/path/${encodeURIComponent(path.id)}">Path complete &mdash; see all ${path.steps.length} &rarr;</a>
            <span class="pn-note">You have finished ${esc(path.title)}.</span>`}
     </div>` : '';
@@ -2737,8 +2799,7 @@ function renderPathsList(){
     const started = pr.done > 0;
     return `<a class="card-link" href="#/path/${encodeURIComponent(p.id)}">
       <article class="card path-card">
-        <div class="path-meta">${p.steps.length} patterns &middot; about ${p.minutes} min${
-          started ? ` &middot; <span class="path-done">${pr.done}/${pr.total} read</span>` : ''}</div>
+        <div class="path-meta">${p.steps.length} patterns, about ${p.minutes} minutes</div>
         <h3>${esc(p.title)}</h3>
         <p class="snippet">${esc(p.blurb)}</p>
         <div class="path-dots">${p.steps.map(s =>
@@ -2749,9 +2810,7 @@ function renderPathsList(){
   return `
   <div class="crumbs"><a href="#/home">Atlas</a> &rsaquo; Paths</div>
   <h1>Guided paths</h1>
-  <p class="book-tagline" style="font-size:1rem;">Ordered walks through patterns that already exist in the Atlas.
-  Each one ends where the next question begins. Nothing here is required reading &mdash; leave a path at any point
-  and the Atlas is still yours to wander.</p>
+  <p class="book-tagline" style="font-size:1rem;">Ordered walks through the patterns. Leave a path whenever you like.</p>
   <div class="section-hd"><h2>Start here</h2></div>
   <p class="secnote">Short routes for a first visit.</p>
   ${STARTER_PATHS.map(card).join('')}
