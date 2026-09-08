@@ -3,7 +3,7 @@
 A single-file reference work tracing recurring literary, theological, structural and
 typological patterns across the 66 books of the King James Version.
 
-Open `bible_pattern_atlas_redesigned.html` in any modern browser. No build step, no
+Open `index.html` in any modern browser. No build step, no
 server, no network access required — everything, including the Scripture text, is
 embedded in the file.
 
